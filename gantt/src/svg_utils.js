@@ -19,6 +19,51 @@ export function createSVG(tag, attrs) {
     return elem;
 }
 
+export function createSVGforeignObjectInput(attrs) {
+    const elem = document.createElementNS('http://www.w3.org/2000/svg', 'foreignObject');
+    for (let attr in attrs) {
+        if (attr === 'append_to') {
+            const parent = attrs.append_to;
+            parent.appendChild(elem);
+        } else if (attr === 'innerHTML') {
+            elem.innerHTML = attrs.innerHTML;
+        } else {
+            elem.setAttribute(attr, attrs[attr]);
+        }
+    }
+   let child = document.createElement('div');
+   //let input = document.createElement('input');
+   let input = document.createElement('input');
+   //let input = document.createElement('textarea');
+   input.value = attrs.text;
+   child.appendChild(input);
+   elem.appendChild(child);
+
+    return elem;
+}
+
+export function createSVGforeignObjectEditor(attrs) {
+    const elem = document.createElementNS('http://www.w3.org/2000/svg', 'foreignObject');
+    for (let attr in attrs) {
+        if (attr === 'append_to') {
+            const parent = attrs.append_to;
+            parent.appendChild(elem);
+        } else if (attr === 'innerHTML') {
+            elem.innerHTML = attrs.innerHTML;
+        } else {
+            elem.setAttribute(attr, attrs[attr]);
+        }
+    }
+   let child = document.createElement('div');
+   //let input = document.createElement('input');
+   //let input = document.createElement('textarea');
+   //input.value = attrs.text;
+   //child.appendChild(input);
+   elem.appendChild(child);
+
+    return elem;
+}
+
 export function animateSVG(svgElement, attr, from, to) {
     const animatedSvgElement = getAnimationElement(svgElement, attr, from, to);
 

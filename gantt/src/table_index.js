@@ -1,5 +1,8 @@
 import date_utils from './date_utils';
-import { $, createSVG, animateSVG } from './svg_utils';
+import { $, createSVG, animateSVG, 
+	createSVGforeignObjectInput,
+	createSVGforeignObjectEditor
+          } from './svg_utils';
 
 export default class Table_Index {
     constructor(gantt, task) {
@@ -24,28 +27,26 @@ export default class Table_Index {
         this.invalid = this.task.invalid;
         this.height = this.gantt.options.bar_height;
         //this.x = this.compute_x();
-        //this.x = 1150;//GS
-        console.log(this.gantt.options.column_width);
-        this.x = this.gantt.options.column_width;
+        this.x = 1150;//GS
         this.y = this.compute_y();
         this.corner_radius = this.gantt.options.bar_corner_radius;
         this.duration =
             date_utils.diff(this.task._end, this.task._start, 'hour') /
             this.gantt.options.step;
         //this.width = this.gantt.options.column_width * this.duration;
-	this.width = 150;
+	this.width = 350;
         this.progress_width =
             this.gantt.options.column_width *
                 this.duration *
                 (this.task.progress / 100) || 0;
         this.group = createSVG('g', {
-            //class: 'bar-wrapper ' + (this.task.custom_class || ''),
-            class: 'index-wrapper ' + (this.task.custom_class || ''),
+            class: 'bar-wrapper ' + (this.task.custom_class || ''),
+            //class: 'index-wrapper ' + (this.task.custom_class || ''),
             'data-id': this.task.id,
         });
         this.bar_group = createSVG('g', {
-            //class: 'bar-group',
-            class: 'index-group',
+            class: 'bar-group',
+            //class: 'index-group',
             append_to: this.group,
         });
         this.handle_group = createSVG('g', {
@@ -73,10 +74,10 @@ export default class Table_Index {
     }
 
     draw() {
-        this.draw_bar();
-        //this.draw_progress_bar();
+        //this.draw_bar();
+        //this.draw_input();
         this.draw_label();
-        //this.draw_resize_handles();
+        //this.draw_label_editor();
     }
 
     draw_bar() {
@@ -89,6 +90,26 @@ export default class Table_Index {
             ry: this.corner_radius,
             class: 'bar',
             append_to: this.bar_group,
+        });
+
+        animateSVG(this.$bar, 'width', 0, this.width);
+
+        if (this.invalid) {
+            this.$bar.classList.add('bar-invalid');
+        }
+    }
+
+    draw_input() {
+        this.$bar = createSVGforeignObjectInput(  {
+            x: this.x ,
+            y: this.y,
+            width: this.width,
+            height: this.height,
+            rx: this.corner_radius,
+            ry: this.corner_radius,
+            class: 'bar',
+            append_to: this.bar_group,
+            text: this.task.name,
         });
 
         animateSVG(this.$bar, 'width', 0, this.width);
@@ -127,6 +148,27 @@ export default class Table_Index {
         });
         // labels get BBox in the next tick
         requestAnimationFrame(() => this.update_label_position());
+    }
+
+    draw_label_editor() {
+        this.$bar = createSVGforeignObjectEditor(  {
+            x: this.x ,
+            y: this.y,
+            width: this.width,
+            height: this.height,
+            rx: this.corner_radius,
+            ry: this.corner_radius,
+            class: 'bar',
+            append_to: this.bar_group,
+            text: this.task.name,
+        });
+
+        animateSVG(this.$bar, 'width', 0, this.width);
+
+        if (this.invalid) {
+            this.$bar.classList.add('bar-invalid');
+        }
+
     }
 
     draw_resize_handles() {
