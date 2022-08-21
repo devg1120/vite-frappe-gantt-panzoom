@@ -1,7 +1,6 @@
 import date_utils from './date_utils';
 import { $, createSVG } from './svg_utils';
 import Bar from './bar';
-import Table_Index from './table_index';
 import Arrow from './arrow';
 import Popup from './popup';
 
@@ -281,7 +280,6 @@ export default class GanttIndex {
         this.make_grid();
         //this.make_dates();
         //this.make_bars();
-        this.make_index();
         //this.make_arrows();
         //this.map_arrows_on_bars();
         this.set_width();
@@ -291,7 +289,7 @@ export default class GanttIndex {
     setup_layers() {
         this.layers = {};
         //const layers = ['grid', 'date', 'arrow', 'progress', 'bar', 'details'];
-        const layers = ['grid', 'bar', 'index', 'details'];
+        const layers = ['grid', 'details'];
         // make group layers
         for (let layer of layers) {
             this.layers[layer] = createSVG('g', {
@@ -305,7 +303,7 @@ export default class GanttIndex {
         this.make_grid_background();
         this.make_grid_rows();
         this.make_grid_header();
-        //this.make_grid_ticks();
+        this.make_grid_ticks();
         //this.make_grid_highlights();
     }
 
@@ -661,14 +659,6 @@ export default class GanttIndex {
             const bar = new Bar(this, task);
             this.layers.bar.appendChild(bar.group);
             return bar;
-        });
-    }
-
-    make_index() {
-        this.index = this.tasks.map((task) => {
-            const index = new Table_Index(this, task);
-            this.layers.index.appendChild(index.group);
-            return index;
         });
     }
 
